@@ -1,13 +1,4 @@
 # ══════════════════════════════════════════════════════════════════════════════
-# Run:
-#   docker run \
-#     -v ./config:/config \
-#     -e CYCLONEDDS_URI=/config/cyclonedds.xml \
-#     --network host \
-#     go2
-#
-# Edit config/cyclonedds.xml on the host to change the network interface.
-# ══════════════════════════════════════════════════════════════════════════════
 # Build-time flags  (pass with --build-arg FLAG=true)
 #
 #   INSTALL_PY_SDK=true   pip-install unitree_sdk2_python (needs CYCLONEDDS_HOME)
@@ -17,12 +8,23 @@
 #     USER_UID=<uid>        override the UID               (default: 1000)
 #     USER_GID=<gid>        override the GID               (default: 1000)
 #
-# Example:
+# Example Build:
 #   docker build \
 #     --build-arg INSTALL_PY_SDK=true \
 #     --build-arg ADD_USER=true \
 #     --build-arg USERNAME=teo \
 #     -t go2 .
+#
+# Example Run:
+#   sudo docker run --rm -it \
+#    -v ./config:/config \
+#    -e CYCLONEDDS_URI=/config/cyclonedds.xml \
+#    -e LANG=C.UTF-8 \
+#    -e LC_ALL=C.UTF-8 \
+#    --network host \
+#    go2
+#
+# Edit config/cyclonedds.xml on the host to change the network interface.
 # ══════════════════════════════════════════════════════════════════════════════
 
 ARG INSTALL_PY_SDK=false
@@ -75,6 +77,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-foxy-rosidl-generator-dds-idl \
     # Full desktop: rviz2, rqt, tf2 tools, ros2 CLI extras
     ros-foxy-desktop \
+    # Text editor
+    neovim \
     && rm -rf /var/lib/apt/lists/*
 
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
